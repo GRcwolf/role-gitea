@@ -1,0 +1,58 @@
+- name: Create gitea group
+  group:
+    name: "{{ gitea_group }}"
+    state: present
+  when: gitea_create_group
+
+- name: Create gitea user
+  user:
+    name: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+    password_lock: yes
+    state: present
+    system: yes
+  when: gitea_create_user
+
+- name: Install gitea
+  get_url:
+    url: "{{ gitea_download_url }}"
+    dest: "{{ gitea_binary_path }}"
+    checksum: "sha256:{{ gitea_download_url }}.sha256"
+    mode: "755"
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+  notify:
+    - restart gitea
+
+- name: Check config dir
+  stat:
+    path: "{{ gitea_config_directory }}"
+  register: gitea_config_dir_stat
+
+- name: Ensure config dir exists
+  file:
+    path: "{{ gitea_config_directory }}"
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+    state: directory
+  when: gitea_config_dir_stat.stat.isdir is defined and not gitea_config_dir_stat.stat.isdir
+
+- name: Ensure data folder exists
+  file:
+    path: "{{ gitea_data_dir }}"
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+    state: directory
+
+- name: Create systemd service
+  template:
+    src: "{{ gitea_service_template }}"
+    dest: "{{ gitea_service_path }}"
+  notify:
+    - restart gitea
+
+- name: Start gitea service
+  service:
+    name: "{{ gitea_service_name }}"
+    state: "started"
+    enabled: "{{ gitea_service_enabled }}"

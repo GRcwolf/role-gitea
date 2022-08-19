@@ -1,0 +1,4 @@
+- name: restart gitea
+  service:
+    name: "{{ gitea_service_name }}"
+    state: restarted

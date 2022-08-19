@@ -1,0 +1,41 @@
+#+title: Gitea Role
+#+author: Chris Wolf <chris@chriswolf.ch>
+This is a basic role that installs gitea.
+
+The role is quite basic and may not have every feature you desire.
+
+** Configuration
+The role provides some customization options.
+You can see them in the list below.
+
+However, the role doesn't support configurations for the =gitea.ini= itself.
+You need to modify it yourself.
+But this role will therefore not reset any changes you may have made to it.
+
+| Name                   | Default              | Description                                               |
+|------------------------+----------------------+-----------------------------------------------------------|
+| gitea_version          |                      | The version of gitea, you want to install                 |
+| gitea_architecture     | amd64                | The architecture of the binary you want to download       |
+| gitea_binary_path      | /usr/local/bin/gitea | The path where the binary should be after installation    |
+| gitea_user             | git                  | The user running gitea                                    |
+| gitea_group            | gitea                | The group running gitea                                   |
+| gitea_create_user      | yes                  | Ensures that the =gitea_user= exists                      |
+| gitea_create_group     | yes                  | Ensures that the =gitea_group= exists                     |
+| gitea_data_dir         | /var/lib/gitea       | The directory where gitea will store its data             |
+| gitea_config_directory | /etc/gitea           | The directory in which the configuration of gitea resides |
+| gitea_config_filename  | app.ini              | The name of the gitea config file                         |
+| gitea_service_template | gitea.service.j2     | The template used for the systemd service                 |
+| gitea_service_enabled  | yes                  | Specifies if the service should be enabled                |
+
+** Variables
+This role also provides some vars, that are not meant to be changes.
+Changing these vaules isn't required in most use cases.
+
+If you have the need to overwrite them, feel free to do so.
+
+| Name               | Default                                                                                                | Description                                                       |
+|--------------------+--------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------|
+| gitea_download_url | https://dl.gitea.io/gitea/{{ gitea_version }}/gitea-{{ gitea_version }}-linux-{{ gitea_architecture }} | The url of the gitea binary                                       |
+| gitea_service_path | /etc/systemd/system/gitea.service                                                                      | The path to the systemd service config                            |
+| gitea_service_name | gitea                                                                                                  | The name of the service, used to restart the service if necessary |
+| gitea_config_file  | {{ gitea_config_directory }}/{{ gitea_config_filename }}                                               | The path of the configuration file                                |

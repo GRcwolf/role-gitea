@@ -1,0 +1,4 @@
+gitea_download_url: "https://dl.gitea.io/gitea/{{ gitea_version }}/gitea-{{ gitea_version }}-linux-{{ gitea_architecture }}"
+gitea_service_path: "/etc/systemd/system/gitea.service"
+gitea_service_name: "gitea"
+gitea_config_file: "{{ gitea_config_directory }}/{{ gitea_config_filename }}"
